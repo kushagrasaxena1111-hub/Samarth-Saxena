@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 10 Quiz Challenge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .subject-selection {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .subject-selection h2 {
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+        
+        .subjects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .subject-btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 10px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subject-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(to right, #2980b9, #3498db);
+        }
+        
+        .subject-btn i {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-container {
+            display: none;
+            padding: 30px;
+        }
+        
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .quiz-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .question-container {
+            margin-bottom: 25px;
+        }
+        
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+        }
+        
+        .option.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+        
+        .option.correct {
+            border-color: #27ae60;
+            background: #e8f5e9;
+        }
+        
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: #ffeaea;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .prev-btn {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .prev-btn:hover:not(:disabled) {
+            background: #7f8c8d;
+        }
+        
+        .next-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        .next-btn:hover:not(:disabled) {
+            background: #2980b9;
+        }
+        
+        .submit-btn {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background: #219653;
+        }
+        
+        .result-container {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .result-container h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .score {
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .message {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .restart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .timer {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .quiz-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .question {
+                font-size: 1.1rem;
+            }
+            
+            .option {
+                padding: 12px;
+                font-size: 1rem;
+            }
+            
+            .score {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-graduation-cap"></i> Class 10 Quiz Challenge</h1>
+            <p>Test your knowledge across 6 subjects - 20 questions to conquer!</p>
+        </header>
+        
+        <!-- Subject Selection Screen -->
+        <div class="subject-selection" id="subjectSelection">
+            <h2>Select Your Subject</h2>
+            <p>Choose a subject to begin your quiz challenge</p>
+            <div class="subjects">
+                <button class="subject-btn" data-subject="maths">
+                    <i class="fas fa-square-root-alt"></i>
+                    Maths
+                </button>
+                <button class="subject-btn" data-subject="science">
+                    <i class="fas fa-flask"></i>
+                    Science
+                </button>
+                <button class="subject-btn" data-subject="hindi">
+                    <i class="fas fa-language"></i>
+                    Hindi
+                </button>
+                <button class="subject-btn" data-subject="sst">
+                    <i class="fas fa-globe-asia"></i>
+                    SST
+                </button>
+                <button class="subject-btn" data-subject="ai">
+                    <i class="fas fa-robot"></i>
+                    AI
+                </button>
+                <button class="subject-btn" data-subject="english">
+                    <i class="fas fa-book"></i>
+                    English
+                </button>
+            </div>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div class="quiz-container" id="quizContainer">
+            <div class="quiz-header">
+                <h2 id="subjectTitle">Maths Quiz</h2>
+                <div class="timer" id="timer">10:00</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <div class="question-container">
+                <div class="question" id="questionText">Question goes here?</div>
+                <div class="options" id="optionsContainer">
+                    <!-- Options will be added dynamically -->
+                </div>
+            </div>
+            <div class="controls">
+                <button class="btn prev-btn" id="prevBtn">Previous</button>
+                <button class="btn next-btn" id="nextBtn">Next</button>
+                <button class="btn submit-btn" id="submitBtn" style="display: none;">Submit Quiz</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div class="result-container" id="resultContainer">
+            <h2>Quiz Completed!</h2>
+            <div class="score" id="finalScore">0/5</div>
+            <p class="message" id="resultMessage">Great job! Keep learning.</p>
+            <button class="restart-btn" id="restartBtn">Try Another Subject</button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data for each subject (5 questions per subject)
+        const quizData = {
+            maths: [
+                {
+                    question: "What is the value of x in the equation 2x + 5 = 15?",
+                    options: ["5", "10", "7.5", "20"],
+                    answer: 0
+                },
+                {
+                    question: "The area of a circle with radius 7 cm is:",
+                    options: ["154 cm²", "44 cm²", "22 cm²", "308 cm²"],
+                    answer: 0
+                },
+                {
+                    question: "If sin θ = 3/5, then cos θ = ?",
+                    options: ["4/5", "3/4", "5/4", "5/3"],
+                    answer: 0
+                },
+                {
+                    question: "The roots of the quadratic equation x² - 5x + 6 = 0 are:",
+                    options: ["2 and 3", "1 and 6", "-2 and -3", "-1 and -6"],
+                    answer: 0
+                },
+                {
+                    question: "The probability of getting a prime number when a die is thrown is:",
+                    options: ["1/2", "1/3", "2/3", "1/6"],
+                    answer: 0
+                }
+            ],
+            science: [
+                {
+                    question: "Which gas is most abundant in the Earth's atmosphere?",
+                    options: ["Nitrogen", "Oxygen", "Carbon dioxide", "Argon"],
+                    answer: 0
+                },
+                {
+                    question: "The SI unit of electric current is:",
+                    options: ["Ampere", "Volt", "Ohm", "Watt"],
+                    answer: 0
+                },
+                {
+                    question: "Which of the following is a greenhouse gas?",
+                    options: ["Methane", "Oxygen", "Nitrogen", "Hydrogen"],
+                    answer: 0
+                },
+                {
+                    question: "The process by which plants make their food is called:",
+                    options: ["Photosynthesis", "Respiration", "Transpiration", "Digestion"],
+                    answer: 0
+                },
+                {
+                    question: "Which part of the human brain is responsible for maintaining balance?",
+                    options: ["Cerebellum", "Cerebrum", "Medulla", "Hypothalamus"],
+                    answer: 0
+                }
+            ],
+            hindi: [
+                {
+                    question: "'अल्पज्ञ' शब्द का अर्थ है:",
+                    options: ["थोड़ा जानने वाला", "बहुत जानने वाला", "अज्ञानी", "विद्वान"],
+                    answer: 0
+                },
+                {
+                    question: "निम्नलिखित में से कौन सा शब्द 'तत्सम' है?",
+                    options: ["घोटक", "घोड़ा", "अश्व", "हय"],
+                    answer: 2
+                },
+                {
+                    question: "'वह पढ़ता है' वाक्य में कौन सा काल है?",
+                    options: ["सामान्य वर्तमान", "अपूर्ण वर्तमान", "संदिग्ध वर्तमान", "सामान्य भूतकाल"],
+                    answer: 0
+                },
+                {
+                    question: "निम्नलिखित में से कौन सा शब्द 'संधि' का उदाहरण है?",
+                    options: ["स्वागत", "पुस्तक", "गृह", "विद्यालय"],
+                    answer: 0
+                },
+                {
+                    question: "'राम ने सीता को फूल दिया' वाक्य में कर्ता कौन है?",
+                    options: ["राम", "सीता", "फूल", "दिया"],
+                    answer: 0
+                }
+            ],
+            sst: [
+                {
+                    question: "Who was the first Governor-General of independent India?",
+                    options: ["Lord Mountbatten", "C. Rajagopalachari", "Dr. Rajendra Prasad", "Jawaharlal Nehru"],
+                    answer: 0
+                },
+                {
+                    question: "The 'Right to Equality' is covered under which Articles of the Indian Constitution?",
+                    options: ["Articles 14-18", "Articles 19-22", "Articles 23-24", "Articles 25-28"],
+                    answer: 0
+                },
+                {
+                    question: "Which river is known as the 'Sorrow of Bengal'?",
+                    options: ["Damodar", "Hooghly", "Ganga", "Brahmaputra"],
+                    answer: 0
+                },
+                {
+                    question: "The concept of 'Sustainable Development' was popularized by which report?",
+                    options: ["Brundtland Report", "Kyoto Protocol", "Montreal Protocol", "Paris Agreement"],
+                    answer: 0
+                },
+                {
+                    question: "Which of the following is NOT a function of the Reserve Bank of India?",
+                    options: ["Issuing currency notes", "Accepting deposits from public", "Banker to the government", "Controller of credit"],
+                    answer: 1
+                }
+            ],
+            ai: [
+                {
+                    question: "What does AI stand for?",
+                    options: ["Artificial Intelligence", "Advanced Integration", "Automated Information", "Artificial Innovation"],
+                    answer: 0
+                },
+                {
+                    question: "Which of these is a subfield of AI?",
+                    options: ["Machine Learning", "Web Development", "Graphic Design", "Database Management"],
+                    answer: 0
+                },
+                {
+                    question: "What is the main goal of AI?",
+                    options: ["To create machines that can perform tasks requiring human intelligence", "To replace all human jobs", "To develop faster computers", "To create virtual reality environments"],
+                    answer: 0
+                },
+                {
+                    question: "Which of these is an example of AI in daily life?",
+                    options: ["Voice assistants like Siri or Alexa", "Digital cameras", "Electric fans", "Refrigerators"],
+                    answer: 0
+                },
+                {
+                    question: "What is machine learning?",
+                    options: ["A subset of AI that enables systems to learn from data", "A type of computer hardware", "A programming language", "A method for creating websites"],
+                    answer: 0
+                }
+            ],
+            english: [
+                {
+                    question: "Identify the correct passive voice: 'They built this house in 1990.'",
+                    options: ["This house was built in 1990.", "This house is built in 1990.", "This house has been built in 1990.", "This house had been built in 1990."],
+                    answer: 0
+                },
+                {
+                    question: "What is the synonym of 'Benevolent'?",
+                    options: ["Kind", "Cruel", "Selfish", "Greedy"],
+                    answer: 0
+                },
+                {
+                    question: "Identify the figure of speech: 'The wind whispered through the trees.'",
+                    options: ["Personification", "Metaphor", "Simile", "Alliteration"],
+                    answer: 0
+                },
+                {
+                    question: "Which sentence is grammatically correct?",
+                    options: ["She has been working here since 2010.", "She is working here since 2010.", "She works here since 2010.", "She worked here since 2010."],
+                    answer: 0
+                },
+                {
+                    question: "What is the antonym of 'Ephemeral'?",
+                    options: ["Permanent", "Temporary", "Brief", "Short-lived"],
+                    answer: 0
+                }
+            ]
+        };
+
+        // DOM elements
+        const subjectSelection = document.getElementById('subjectSelection');
+        const quizContainer = document.getElementById('quizContainer');
+        const resultContainer = document.getElementById('resultContainer');
+        const subjectTitle = document.getElementById('subjectTitle');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const finalScore = document.getElementById('finalScore');
+        const resultMessage = document.getElementById('resultMessage');
+        const restartBtn = document.getElementById('restartBtn');
+        const progressBar = document.getElementById('progressBar');
+        const timerDisplay = document.getElementById('timer');
+
+        // Quiz state
+        let currentSubject = '';
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let score = 0;
+        let timer;
+        let timeLeft = 600; // 10 minutes in seconds
+
+        // Initialize the quiz
+        function initQuiz() {
+            // Add event listeners to subject buttons
+            document.querySelectorAll('.subject-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentSubject = btn.dataset.subject;
+                    startQuiz(currentSubject);
+                });
+            });
+            
+            // Navigation buttons
+            prevBtn.addEventListener('click', goToPrevQuestion);
+            nextBtn.addEventListener('click', goToNextQuestion);
+            submitBtn.addEventListener('click', showResults);
+            restartBtn.addEventListener('click', () => {
+                resultContainer.style.display = 'none';
+                subjectSelection.style.display = 'block';
+                resetTimer();
+            });
+        }
+
+        // Start quiz for selected subject
+        function startQuiz(subject) {
+            currentSubject = subject;
+            currentQuestion = 0;
+            userAnswers = new Array(quizData[subject].length).fill(null);
+            score = 0;
+            timeLeft = 600;
+            
+            // Update UI
+            subjectSelection.style.display = 'none';
+            quizContainer.style.display = 'block';
+            resultContainer.style.display = 'none';
+            
+            // Set subject title
+            const subjectNames = {
+                maths: 'Mathematics',
+                science: 'Science',
+                hindi: 'Hindi',
+                sst: 'Social Science',
+                ai: 'Artificial Intelligence',
+                english: 'English'
+            };
+            subjectTitle.textContent = `${subjectNames[subject]} Quiz`;
+            
+            // Load first question
+            loadQuestion();
+            updateProgressBar();
+            startTimer();
+        }
+
+        // Load current question
+        function loadQuestion() {
+            const question = quizData[currentSubject][currentQuestion];
+            questionText.textContent = `${currentQuestion + 1}. ${question.question}`;
+            
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+            
+            // Add new options
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                
+                // Add selected class if previously selected
+                if (userAnswers[currentQuestion] === index) {
+                    optionElement.classList.add('selected');
+                }
+                
+                optionElement.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // Update navigation buttons
+            prevBtn.disabled = currentQuestion === 0;
+            nextBtn.style.display = currentQuestion < quizData[currentSubject].length - 1 ? 'block' : 'none';
+            submitBtn.style.display = currentQuestion === quizData[currentSubject].length - 1 ? 'block' : 'none';
+        }
+
+        // Select an option
+        function selectOption(index) {
+            // Remove selected class from all options
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            event.target.classList.add('selected');
+            
+            // Save answer
+            userAnswers[currentQuestion] = index;
+        }
+
+        // Go to previous question
+        function goToPrevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion();
+                updateProgressBar();
+            }
+        }
+
+        // Go to next question
+        function goToNextQuestion() {
+            if (currentQuestion < quizData[currentSubject].length - 1) {
+                currentQuestion++;
+                loadQuestion();
+                updateProgressBar();
+            }
+        }
+
+        // Update progress bar
+        function updateProgressBar() {
+            const progress = ((currentQuestion) / quizData[currentSubject].length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // Start timer
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showResults();
+                }
+            }, 1000);
+        }
+
+        // Reset timer
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = 600;
+            timerDisplay.textContent = "10:00";
+        }
+
+        // Show results
+        function showResults() {
+            clearInterval(timer);
+            
+            // Calculate score
+            score = 0;
+            quizData[currentSubject].forEach((question, index) => {
+                if (userAnswers[index] === question.answer) {
+                    score++;
+                }
+            });
+            
+            // Display results
+            quizContainer.style.display = 'none';
+            resultContainer.style.display = 'block';
+            finalScore.textContent = `${score}/${quizData[currentSubject].length}`;
+            
+            // Set message based on score
+            if (score === quizData[currentSubject].length) {
+                resultMessage.textContent = "Perfect! You're a true scholar!";
+            } else if (score >= quizData[currentSubject].length * 0.8) {
+                resultMessage.textContent = "Excellent! Great job!";
+            } else if (score >= quizData[currentSubject].length * 0.6) {
+                resultMessage.textContent = "Good effort! Keep learning.";
+            } else {
+                resultMessage.textContent = "Keep practicing! You can do better.";
+            }
+        }
+
+        // Initialize the app
+        window.onload = initQuiz;
+    </script>
+</body>
+</html>
